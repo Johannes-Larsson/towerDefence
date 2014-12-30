@@ -1,0 +1,122 @@
+package com.JohannesLarsson.towerDefence;
+
+import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+
+public class Enemy {
+	
+	enum Type { Ground, Air }
+	
+	public static final float SIZE = Tile.SIZE / 2;
+	
+	public float hp;
+	public float armor;
+	public float maxHp;
+	public  float speed;
+	public float shield;
+	public float maxShield;
+	public float shieldRegen;
+	public Type type;
+	public boolean remove;
+	public boolean escaped;
+	public boolean started;
+	public float rewardMultiplier;
+	
+    private float x;
+	private float y;
+	private float rotation;
+	private Sprite sprite;
+	private int nextMovementNodeIndex;
+	
+	public float getCenterX() {
+		return x;// - SIZE / 2;
+	}
+	
+	public float getCenterY() {
+		return y;// - SIZE / 2;
+	}
+
+	public float getX() {
+		return x;
+	}
+
+    public float getY() {
+		return y;
+	}
+	
+	public Enemy(float maxHp, float armor, Type type, float speed, float maxShield, float shieldRegen, float rewardMultiplier) {
+		hp = this.maxHp = maxHp;
+		this.type = type;
+		this.speed = speed;
+		this.armor = armor;
+		x = Map.movementX[0];
+		y = Map.movementY[0];
+		this.speed = speed;
+		this.rewardMultiplier = rewardMultiplier;
+		remove = false;
+		escaped = false;
+		nextMovementNodeIndex = 0;
+		sprite = new Sprite(Textures.enemy);
+		sprite.setSize(SIZE, SIZE);
+		sprite.setOriginCenter();
+		sprite.setCenter(x - Tile.SIZE / 4, y - Tile.SIZE / 4);
+	}
+	
+	public Enemy(Enemy e) {
+		hp = this.maxHp = e.maxHp;
+		this.type = e.type;
+		this.speed = e.speed;
+		this.armor = e.armor;
+		x = Map.movementX[0];
+		y = Map.movementY[0];
+		speed = e.speed;
+		this.rewardMultiplier = e.rewardMultiplier;
+		
+		remove = false;
+		escaped = false;
+		nextMovementNodeIndex = 0;
+		sprite = new Sprite(Textures.enemy);
+		sprite.setSize(SIZE, SIZE);
+		sprite.setOriginCenter();
+		sprite.setCenter(x - Tile.SIZE / 4, y - Tile.SIZE / 4);
+	}
+	
+	public void update(Enemy previousEnemy) {
+		
+		if(Math.pow((Map.movementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.movementY[nextMovementNodeIndex] - y, 2) < 5) {
+			if(nextMovementNodeIndex < Map.movementX.length - 1) nextMovementNodeIndex += 1;
+			else {
+				remove = true;
+				escaped = true;
+			}
+		}
+		
+		if(started) {
+			rotation = (float) (MathUtils.radDeg * MathUtils.atan2(Map.movementY[nextMovementNodeIndex] - y, Map.movementX[nextMovementNodeIndex] - x)) % 360;
+			x += MathUtils.cosDeg(rotation) * speed;
+			y += MathUtils.sinDeg(rotation) * speed; 
+		}
+		
+		if(hp <= 0) remove = true;
+		
+		if(previousEnemy == null) started = true; // this is the first enemy
+		else if(Math.pow(previousEnemy.x - x, 2) + Math.pow(previousEnemy.y - y, 2) > 10000) started = true;
+		
+		sprite.setRotation(rotation);
+		sprite.setCenter(x, y);
+	}
+	
+	public void draw(SpriteBatch batch) {
+		final float HEIGHT = 10, WIDTH = 80, XOFFSET = -40, YOFFSET = 40;
+		sprite.draw(batch);
+		batch.setColor(Color.GRAY);
+		batch.draw(Textures.whitePixel, x + XOFFSET, y + YOFFSET, WIDTH, HEIGHT);
+		batch.setColor(Color.RED);
+		batch.draw(Textures.whitePixel, x + XOFFSET, y + YOFFSET, WIDTH * (hp / maxHp), HEIGHT); 
+		batch.setColor(Color.WHITE);
+	}
+}
