@@ -106,16 +106,22 @@ public class Buttons {
 					towerInfoBack.draw(batch);
 					break;
 					
-				case UpgradingMenu:
+				case UpgradeSelected:
 					//upgrade, done
-					if(Game.selectedTower.upgradable()) {
-						if(Game.selectedTower.upgradeCost() > Game.playerMoney) upgrade.textColor = Color.RED;
+					if(Game.selectedTower.isUpgradable()) {
+						if(Game.selectedTower.upgradeCost(Game.selectedUpgradeIndex) > Game.playerMoney) upgrade.textColor = Color.RED; 
 						else upgrade.textColor = Color.BLACK;
 						
 						upgrade.draw(batch);
 					}
 					upgradingDone.draw(batch);
-					break;				
+					break;	
+					
+				case UpgradingMenu:
+					
+					upgradingDone.draw(batch);
+					
+					break;
 				}
 				
 				break;
@@ -131,7 +137,7 @@ public class Buttons {
 			
 		case Menu:
 			//continue, exit, newGame
-			mainContinue.draw(batch);
+			//mainContinue.draw(batch);
 			mainExit.draw(batch);
 			mainNew.draw(batch);
 			break;	

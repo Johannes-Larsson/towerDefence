@@ -35,7 +35,7 @@ public class SaveHandler {
 		for(int x = 0; x < Map.WIDTH; x++) {
 			for(int y = 0; y < Map.HEIGHT; y++) {
 				if(Map.tiles[x][y].hasTower()) {
-					Gdx.app.getPreferences(saveName).putInteger(x + ":" + y + ":tLevel", Map.tiles[x][y].tower.getLevel());
+					//Gdx.app.getPreferences(saveName).putInteger(x + ":" + y + ":tLevel", Map.tiles[x][y].tower.getLevel());
 					Gdx.app.getPreferences(saveName).putInteger(x + ":" + y + ":tIndex", Towers.prefabIndex(Map.tiles[x][y].tower));
 				}
 			}

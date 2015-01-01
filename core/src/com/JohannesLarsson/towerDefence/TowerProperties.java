@@ -12,18 +12,10 @@ public class TowerProperties {
 	public Targets targets;
 	public float armorPenetration;
 	public Texture texture;
-	
-	/**
-	 * 
-	 * @param shotsPerSecond
-	 * @param damage
-	 * @param cost
-	 * @param targets
-	 * @param armorPenetration
-	 * @param range
-	 * @param texture 
-	 */
-	public TowerProperties(float shotsPerSecond, float damage, int cost, Targets targets, float armorPenetration, float range, Texture texture) {
+	public TowerProperties[] upgrades;
+	public String name;
+
+	public TowerProperties(float shotsPerSecond, float damage, int cost, Targets targets, float armorPenetration, float range, Texture texture, String name, TowerProperties[] upgrades) {
 		this.shotsPerSecond = shotsPerSecond;
 		this.damage = damage;
 		this.cost = cost;
@@ -31,6 +23,8 @@ public class TowerProperties {
 		this.armorPenetration = armorPenetration;
 		this.range = range;
 		this.texture = texture;
+		this.upgrades = upgrades;
+		this.name = name;
 	}
 	
 	public boolean hasNewTexture() {

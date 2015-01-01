@@ -14,25 +14,27 @@ public class Tower {
 	
 	private static final float SIZE = Tile.SIZE;
 	
-	public String name;
+	private static final float THUMBNAILSIZE = 150, THUMBNAILPADDING = 100;
 	
+	//public String name; //TODO: put in towerProperties instead
+	
+	private TowerProperties currentProperties;
 	private int level;
 	private float x;
 	private float y;
 	private float rotation;
 	private Texture textures;
-	private TowerProperties[] upgrades;
+	//private TowerProperties[] currentProperties.upgrades;
 	private Sprite base;
 	private Sprite head;
 	private Sprite range;
 	private float shotCounter;
 
-	public Tower(Texture defaultTexture, String name, TowerProperties[] upgrades) {
+	public Tower(Texture defaultTexture, TowerProperties properties) {
 		this.level = 0;
 		this.x = 0;
 		this.y = 0;
-		this.upgrades = upgrades;
-		this.name = name;
+		this.currentProperties = properties;
 		this.textures = defaultTexture;
 		
 		shotCounter = 1;
@@ -89,15 +91,20 @@ public class Tower {
 	
 	//==================================== GETTERS, SETTERS, STUFF LIKE THAT ===============================================
 	
-	public TowerProperties getCurrentProperties() { return upgrades[level]; }
+	public TowerProperties getCurrentProperties() //{ return currentProperties.upgrades[level]; }
+	{ return currentProperties; }
 	
-	public int getLevel() {
+	/*public int getLevel() { //TODO: wont be linear, probably not needed
 		return level;
-	}
+	}*/
 
-	public void setLevel(int level) {
+	public void setLevel(int level) { //TODO: will need a map of the path in the upgrade tree
 		this.level = level;
-		if(upgrades[level].hasNewTexture()) setTextures(upgrades[level].texture);
+		if(currentProperties.upgrades[level].hasNewTexture()) setTextures(currentProperties.upgrades[level].texture);
+	}
+	
+	public String getName() {
+		return getCurrentProperties().name;
 	}
 	
 	private void setTextures(Texture spriteSheet) {
@@ -112,7 +119,7 @@ public class Tower {
 	}
 	
 	public Tower copy() {
-		return new Tower(textures, name, upgrades);
+		return new Tower(textures, currentProperties);
 	}
 	
 	public float getX() {
@@ -130,6 +137,14 @@ public class Tower {
 	public float getCenterY() {
 		return y + SIZE / 2;
 	}
+	
+	private static float thumbnailX(int i) {
+		return  (i % 2) * (THUMBNAILPADDING + THUMBNAILSIZE) + Game.VIEWPORT_WIDTH / 2 - (THUMBNAILPADDING) / 2  - THUMBNAILSIZE;
+	}
+	
+	private static float thumbnailY(int i) {
+		return Game.VIEWPORT_HEIGHT / 2 + (THUMBNAILPADDING + THUMBNAILSIZE) / 2 - (THUMBNAILPADDING + THUMBNAILSIZE) * (i / 2);
+	}
 
 	public void setChoords(float x, float y) {
 		this.x = x;
@@ -140,8 +155,8 @@ public class Tower {
 		range.setPosition(x - range.getWidth() / 2 + base.getWidth() / 2, y - range.getHeight() / 2 + base.getHeight() / 2);
 	}
 	
-	public int upgradeCost() {
-		if(upgradable()) return upgrades[level + 1].cost;
+	public int upgradeCost(int upgradeIndex) {
+		if(isUpgradable()) return currentProperties.upgrades[upgradeIndex].cost;
 		else return -1;
 	}
 	
@@ -149,10 +164,11 @@ public class Tower {
 		return getCurrentProperties().cost;
 	}
 	
-	public void upgrade() {
-		if(upgradable()) {
-			if(Game.playerMoney >= upgradeCost()) {
-				level++;
+	public void upgrade(int upgradeIndex) {
+		if(isUpgradable()) {
+			if(Game.playerMoney >= upgradeCost(upgradeIndex)) {
+				currentProperties = currentProperties.upgrades[upgradeIndex];
+				
 				Game.playerMoney -= cost();
 				
 				range.setSize(getCurrentProperties().range * 2, getCurrentProperties().range * 2);
@@ -165,19 +181,19 @@ public class Tower {
 		}
 	}
 	
-	public boolean upgradable() {
-		return level + 1 < upgrades.length;
+	public boolean isUpgradable() {
+		return getCurrentProperties().upgrades.length > 0;
 	}
 	
 	public boolean isClicked() {
 		return Game.ts.intersectingWith(x, y, SIZE, SIZE) && Game.ts.wasJustPressed();
 	}
 	
-	public String[] getUpgradeMessage() {
+	public String[] getUpgradeMessage(int selectedLevelIndex) {
 		ArrayList<String> m = new ArrayList<String>();
 		
 		TowerProperties c = getCurrentProperties(), n;
-		if(upgradable()) n = upgrades[level + 1];
+		if(isUpgradable()) n = currentProperties.upgrades[selectedLevelIndex]; 
 		else n = c;
 		
 		float dShots = n.shotsPerSecond - c.shotsPerSecond;
@@ -201,6 +217,20 @@ public class Tower {
 		//TODO: handle decrease in stats if i want to add that somewhere, which might be interesting, also maybe color the stuff
 	}
 	
+	public boolean upgradeIsClicked() {
+		return getClickedUpgrade() != -1;
+	}
+	
+	public int getClickedUpgrade() {
+		int index = -1;
+		
+		for(int i = 0; i < getCurrentProperties().upgrades.length; i++) {
+			if(Game.ts.intersectingWith(thumbnailX(i), thumbnailY(i), THUMBNAILSIZE, THUMBNAILSIZE) && Game.ts.isPressed) index = i;
+		}
+		
+		return index;
+	}
+	
 	
 	//=================================================DRAWING========================================================
 	
@@ -208,7 +238,7 @@ public class Tower {
 	public void drawInfo(SpriteBatch batch) {
 		batch.setColor(Color.LIGHT_GRAY);
 		batch.draw(Textures.whitePixel, 50, 150, Game.VIEWPORT_WIDTH - 100, Game.VIEWPORT_HEIGHT - 200);
-		Textures.font.draw(batch, name, 100, 1100);
+		Textures.font.draw(batch, getCurrentProperties().name, 100, 1100);
 		Textures.font.draw(batch, "Targets: " + Towers.translateTarget(getCurrentProperties().targets), 100, 1000);
 		Textures.font.draw(batch, "Damage: " + getCurrentProperties().damage, 100, 900);
 		Textures.font.draw(batch, "Shots per second: " + getCurrentProperties().shotsPerSecond, 100, 800);
@@ -228,8 +258,18 @@ public class Tower {
 		range.draw(batch);
 	}
 	
+	public void drawUpgradeThumbnails(SpriteBatch batch) {
+		if(getCurrentProperties().upgrades.length == 0) return;
+		
+		Textures.drawGrayBox(batch, Game.VIEWPORT_HEIGHT / 2 - THUMBNAILSIZE - THUMBNAILPADDING * 1.5f, THUMBNAILSIZE * 2 + THUMBNAILPADDING * 3);
+		
+		for(int i = 0; i < getCurrentProperties().upgrades.length; i++) {
+			drawThumbnail(batch, thumbnailX(i), thumbnailY(i), THUMBNAILSIZE);
+		}
+	}
+	
 	public void drawUpgradeStats(SpriteBatch batch) {
-		String[] msg = getUpgradeMessage();
+		String[] msg = getUpgradeMessage(Game.selectedUpgradeIndex);
 		if(msg.length == 0) return; // the tower is max level, dont draw anything
 		//draw gray box behind
 		batch.setColor(Color.LIGHT_GRAY);
@@ -237,13 +277,14 @@ public class Tower {
 				50, 450, //(Game.VIEWPORT_HEIGHT / 2) - (msg.length * 60) - 10, 
 				Game.VIEWPORT_WIDTH - 100, msg.length * 60);
 		batch.setColor(Color.WHITE);
+		//draw text
 		for(int i = 0; i < msg.length; i++) {
-			Textures.font.draw(batch, msg[i], 80, 500 + /*(msg.length * 30) -*/ (i * 60)); //TODO: adjust
+			Textures.font.draw(batch, msg[i], 80, 500 + /*(msg.length * 30) -*/ (i * 60));
 		}
 	}
 	
 	public void drawTitle(SpriteBatch batch) {
-		String s = "Level " + (level + 1) + " " + name;
+		String s = "Level " + (level + 1) + " " + getCurrentProperties().name;
 		Textures.font.draw(batch, s, (Game.VIEWPORT_WIDTH / 2) - (Textures.font.getBounds(s).width / 2), Game.VIEWPORT_HEIGHT - 150);
 		//Textures.font.draw(batch, s, 100, 100);
 	}
@@ -252,7 +293,7 @@ public class Tower {
 		batch.draw(new TextureRegion(textures, textures.getWidth() / 2, textures.getHeight()), x, y, size, size);
 		batch.draw(new TextureRegion(textures, textures.getWidth() / 2, 0, textures.getWidth() / 2, textures.getHeight()), x, y, textures.getWidth() / 4, textures.getHeight() / 2, size, size, 1, 1, 0);
 		if(Game.playerMoney < cost()) Textures.font.setColor(Color.RED);
-		Textures.font.draw(batch, name, x + (size / 2) - (Textures.font.getBounds(name).width / 2) ,y);
+		Textures.font.draw(batch, getCurrentProperties().name, x + (size / 2) - (Textures.font.getBounds(getCurrentProperties().name).width / 2) ,y);
 		Textures.font.setColor(Color.BLACK);
 	}
 }

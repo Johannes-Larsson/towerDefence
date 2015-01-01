@@ -23,18 +23,20 @@ public abstract class Towers {
 	}
 	
 	public static Tower[] prefabs = new Tower[] {
-		new Tower(Textures.basicTower, "Basic Tower", new TowerProperties[] { 
-				new TowerProperties(0.7f, 1, 100, Targets.Ground, 0, 200, null), 
-				new TowerProperties(1.0f, 2, 50, Targets.Ground, .1f, 250, null) }),
+		new Tower(Textures.basicTower, new TowerProperties(1, 1, 100, Targets.Ground, 0, 200, Textures.basicTower, "Basic Tower 1", new TowerProperties[] 
+				{
+				  new TowerProperties(2, 2, 200, Targets.Ground, 1, 300, Textures.basicTower, "Op Basic Tower", new TowerProperties[] {}),
+				  new TowerProperties(2, 2, 200, Targets.Ground, 1, 300, Textures.basicTower, "Op Basic Tower", new TowerProperties[] {})
+				}))
 				
-		new Tower(Textures.basicTower, "Anti-Air Tower", new TowerProperties[] { 
+		/*new Tower(Textures.basicTower, "Anti-Air Tower", new TowerProperties[] { 
 				new TowerProperties(3, .5f, 200, Targets.Air, .5f, 300, null), 
 				new TowerProperties(5, .7f, 60, Targets.Air, .6f, 350, null) } ),
 				
 		new Tower(Textures.basicTower, "Fast Tower", new TowerProperties[] {
 				new TowerProperties(2, .3f, 200, Targets.Ground, .4f, 300, null),
 				new TowerProperties(3, .45f, 100, Targets.Both, .45f, 350, null)
-		})
+		})*/
 	} ;
 	
 	public static Tower clickedTower() {
@@ -76,7 +78,7 @@ public abstract class Towers {
 	
 	public static int prefabIndex(Tower t) {
 		for(int i = 0; i < getAllTowerPrefabs().size(); i++) {
-			if(getAllTowerPrefabs().get(i).name.equals(t.name)) return i;
+			if(getAllTowerPrefabs().get(i).getName().equals(t.getName())) return i;
 		}
 		return -1;
 	}

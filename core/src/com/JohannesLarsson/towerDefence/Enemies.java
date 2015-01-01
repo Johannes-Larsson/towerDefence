@@ -33,4 +33,5 @@ public class Enemies {
 	}
 	
 	public static String m = "";
+	//TODO: if you click on an enemy during wave, display stats somehow
 }

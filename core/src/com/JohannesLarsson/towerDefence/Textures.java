@@ -1,10 +1,14 @@
 package com.JohannesLarsson.towerDefence;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Textures {
+	
+	private static final float BACKG_X = 50, BACKG_W = 600;
 	
 	public static Texture 
 	//img,
@@ -38,5 +42,11 @@ public abstract class Textures {
 	
 	public static void setSmallFontScale() {
 		font.setScale(2.0f);
+	}
+	
+	public static void drawGrayBox(SpriteBatch batch, float y, float height) { //TODO: implement this instead of regular gray box drawing
+		batch.setColor(Color.LIGHT_GRAY);
+		batch.draw(whitePixel, BACKG_X, y, BACKG_W, height);
+		batch.setColor(Color.WHITE);
 	}
 }

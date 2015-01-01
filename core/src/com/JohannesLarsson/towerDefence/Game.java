@@ -24,7 +24,7 @@ public class Game extends ApplicationAdapter {
 	}
 
 	public enum UpgradeStates {
-		Inspecting, TowerMenu, TowerInfo, PlacingTower, UpgradingMenu
+		Inspecting, TowerMenu, TowerInfo, PlacingTower, UpgradingMenu, UpgradeSelected 
 	}
 	
 	public static GameStates gameState;
@@ -37,6 +37,7 @@ public class Game extends ApplicationAdapter {
 	public static ArrayList<Shot> shots;
 	public static int level;
 	public static Tower selectedTower;
+	public static int selectedUpgradeIndex;  
 
 	SpriteBatch batch;
 	OrthographicCamera camera;
@@ -103,6 +104,7 @@ public class Game extends ApplicationAdapter {
 				case Inspecting:
 					
 					if (Buttons.inspectingAddTower.isPressed()) upgradeState = UpgradeStates.TowerMenu;
+					
 					if(Buttons.inspectingStartWave.isPressed()) {
 						waveState = WaveStates.Wave;
 						enemies.clear();
@@ -110,10 +112,11 @@ public class Game extends ApplicationAdapter {
 						enemies = Enemies.getNewWave();
 						SaveHandler.save();
 					}
+					
 					if(Buttons.inspectingToMenu.isPressed()) gameState = GameStates.Menu;
 					
 					if(Map.clickedTile() != null) {
-						if(Map.clickedTile().hasTower()) {
+						if(Map.clickedTile().hasTower()) { //TODO: if only one upgrade, skip upgrade selection
 							selectedTower = Map.clickedTile().tower;
 							upgradeState = UpgradeStates.UpgradingMenu;
 						}
@@ -149,11 +152,33 @@ public class Game extends ApplicationAdapter {
 					
 					break;
 					
-				case UpgradingMenu:
-					if(selectedTower.upgradable()) Buttons.upgrade.text = "Upgrade ($" + selectedTower.upgradeCost() + ")";
-					else Buttons.upgrade.text = "Max Level";
+				case UpgradingMenu: 
 					
-					if(Buttons.upgrade.isPressed()) selectedTower.upgrade();
+					int selected = selectedTower.getClickedUpgrade();
+					
+					//upgrade chosen
+					if(selected != -1) {
+						selectedUpgradeIndex = selected;
+						upgradeState = UpgradeStates.UpgradeSelected;
+					}
+					
+					//cancel
+					if(Buttons.upgradingDone.isPressed() || ts.wasJustPressed() && !Buttons.upgrade.isPressed() && !Buttons.upgradingDone.isPressed() && !selectedTower.upgradeIsClicked()) {
+						selectedTower = null;
+						upgradeState = UpgradeStates.Inspecting;
+					}
+					
+					break;
+					
+				case UpgradeSelected:
+					
+					Buttons.upgrade.text = "Upgrade ($" + selectedTower.upgradeCost(selectedUpgradeIndex) + ")";
+										
+					if(Buttons.upgrade.isPressed() && playerMoney >= selectedTower.upgradeCost(selectedUpgradeIndex)) {
+						selectedTower.upgrade(selectedUpgradeIndex);
+						upgradeState = UpgradeStates.Inspecting;
+						selectedTower = null;
+					}
 					
 					if(Buttons.upgradingDone.isPressed() || ts.wasJustPressed() && !Buttons.upgrade.isPressed() && !Buttons.upgradingDone.isPressed()) {
 						selectedTower = null;
@@ -207,11 +232,11 @@ public class Game extends ApplicationAdapter {
 			
 		case Menu:
 			
-			if(Buttons.mainContinue.isPressed()) {
+			/*if(Buttons.mainContinue.isPressed()) { //TODO: fix loading of tower levels
 				endRound();
 				if(SaveHandler.saveExists()) SaveHandler.load();
 				gameState = GameStates.Game;
-			}
+			}*/
 			if(Buttons.mainNew.isPressed()) {
 				endRound();
 				SaveHandler.clear();
@@ -276,6 +301,15 @@ public class Game extends ApplicationAdapter {
 					break;
 					
 				case UpgradingMenu:
+					
+					selectedTower.drawTitle(batch);
+					Textures.setSmallFontScale();
+					selectedTower.drawUpgradeThumbnails(batch);
+					Textures.setRegularFontScale();
+					
+					break;
+					
+				case UpgradeSelected:
 					
 					selectedTower.drawRange(batch);
 					selectedTower.drawTitle(batch);
