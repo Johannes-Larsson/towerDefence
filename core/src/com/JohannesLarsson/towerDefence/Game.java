@@ -150,7 +150,7 @@ public class Game extends ApplicationAdapter {
 					break;
 					
 				case UpgradingMenu:
-					
+					//TODO: show the player what will change on upgrade
 					if(selectedTower.upgradable()) Buttons.upgrade.text = "Upgrade ($" + selectedTower.upgradeCost() + ")";
 					else Buttons.upgrade.text = "Max Level";
 					
@@ -175,7 +175,7 @@ public class Game extends ApplicationAdapter {
 					waveState = WaveStates.BetweenWaves; 
 					level++;
 					SaveHandler.save();
-					}
+				}
 				 
 				if(Buttons.waveMenu.isPressed()) gameState = GameStates.Menu;
 				if(Buttons.wavePause.isPressed()) gameState = GameStates.Paused;
@@ -280,6 +280,7 @@ public class Game extends ApplicationAdapter {
 					
 					selectedTower.drawRange(batch);
 					selectedTower.drawTitle(batch);
+					selectedTower.drawUpgradeStats(batch);
 					
 					break;
 				}

@@ -53,21 +53,6 @@ public class Tower {
 		range.setSize(getCurrentProperties().range * 2, getCurrentProperties().range * 2);
 	}
 	
-	public Tower copy() {
-		return new Tower(textures, name, upgrades);
-	}
-	
-	private void setTextures(Texture spriteSheet) {
-		head = new Sprite(spriteSheet, spriteSheet.getWidth() / 2, 0, spriteSheet.getWidth() / 2, spriteSheet.getHeight());
-		head.setSize(SIZE, SIZE);
-		head.setPosition(x, y);
-		head.setOriginCenter();
-		
-		base = new Sprite(spriteSheet, spriteSheet.getWidth() / 2, spriteSheet.getHeight());
-		base.setSize(SIZE, SIZE);
-		base.setPosition(x, y);
-	}
-	
 	public void update(ArrayList<Enemy> enemies) {
 		Enemy target = null;
 		/*float closestDist = Float.MAX_VALUE;
@@ -108,6 +93,25 @@ public class Tower {
 				}
 			}
 		}
+	}
+	
+	
+	//==================================== GETTERS, SETTERS, STUFF LIKE THAT ===============================================
+	
+	
+	private void setTextures(Texture spriteSheet) {
+		head = new Sprite(spriteSheet, spriteSheet.getWidth() / 2, 0, spriteSheet.getWidth() / 2, spriteSheet.getHeight());
+		head.setSize(SIZE, SIZE);
+		head.setPosition(x, y);
+		head.setOriginCenter();
+		
+		base = new Sprite(spriteSheet, spriteSheet.getWidth() / 2, spriteSheet.getHeight());
+		base.setSize(SIZE, SIZE);
+		base.setPosition(x, y);
+	}
+	
+	public Tower copy() {
+		return new Tower(textures, name, upgrades);
 	}
 	
 	public float getX() {
@@ -168,6 +172,38 @@ public class Tower {
 		return Game.ts.intersectingWith(x, y, SIZE, SIZE) && Game.ts.wasJustPressed();
 	}
 	
+	public String[] getUpgradeMessage() {
+		ArrayList<String> m = new ArrayList<String>();
+		
+		TowerProperties c = getCurrentProperties(), n;
+		if(upgradable()) n = upgrades[level + 1];
+		else n = c;
+		
+		float dShots = n.shotsPerSecond - c.shotsPerSecond;
+		float dDmg = n.damage - c.damage;
+		float dRange = n.range - c.range;
+		float dArmPen = n.armorPenetration - c.armorPenetration;
+		
+		if(dShots > 0) m.add("Shots per Secons: +" + dShots);
+		if(dDmg > 0) m.add("Damage: +" + Math.round(dDmg * 100) / 100f);
+		if(dRange > 0) m.add("Range: +" + dRange);
+		if(dArmPen > 0) m.add("Armor Penetration: +" + Math.round(dArmPen * 100) / 100f); //fix floating point errors
+		
+		if(n.targets != c.targets) m.add("Can target " + n.targets);
+		
+		String[] s = new String[m.size()];
+		for(int i = 0; i < s.length; i++) {
+			s[i] = m.get(i);
+		}
+		return s;
+				
+		//TODO: handle decrease in stats if i want to add that somewhere, which might be interesting
+	}
+	
+	
+	//=================================================DRAWING========================================================
+	
+	
 	public void drawInfo(SpriteBatch batch) {
 		batch.setColor(Color.LIGHT_GRAY);
 		batch.draw(Textures.whitePixel, 50, 150, Game.VIEWPORT_WIDTH - 100, Game.VIEWPORT_HEIGHT - 200);
@@ -189,6 +225,19 @@ public class Tower {
 	
 	public void drawRange(SpriteBatch batch) {
 		range.draw(batch);
+	}
+	
+	public void drawUpgradeStats(SpriteBatch batch) {
+		if(getUpgradeMessage().length == 0) return; // the tower is max level, dont draw anything
+		//draw gray box behind
+		batch.setColor(Color.LIGHT_GRAY);
+		batch.draw(Textures.whitePixel, 
+				50, (Game.VIEWPORT_HEIGHT / 2) - (getUpgradeMessage().length * 30) - 10, 
+				Game.VIEWPORT_WIDTH - 100, getUpgradeMessage().length * 60 + 20);
+		batch.setColor(Color.WHITE);
+		for(int i = 0; i < getUpgradeMessage().length; i++) {
+			Textures.font.draw(batch, getUpgradeMessage()[i], 80, (Game.VIEWPORT_HEIGHT / 2) + (getUpgradeMessage().length * 30) - (i * 60)); //TODO: adjust
+		}
 	}
 	
 	public void drawTitle(SpriteBatch batch) {
