@@ -80,4 +80,9 @@ public abstract class Towers {
 		}
 		return -1;
 	}
+	
+	public static String translateTarget(TowerProperties.Targets target) {
+		if(target == Targets.Both) return "ground and air";
+		else return (target + "").toLowerCase();
+	}
 }

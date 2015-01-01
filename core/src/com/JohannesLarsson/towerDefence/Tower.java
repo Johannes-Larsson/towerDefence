@@ -190,7 +190,7 @@ public class Tower {
 		if(dRange > 0) m.add("Range: +" + dRange);
 		if(dArmPen > 0) m.add("Armor Penetration: +" + Math.round(dArmPen * 100) / 100f); //fix floating point errors
 		
-		if(n.targets != c.targets) m.add("Can target " + n.targets);
+		if(n.targets != c.targets) m.add("Can target " + Towers.translateTarget(n.targets));
 		
 		String[] s = new String[m.size()];
 		for(int i = 0; i < s.length; i++) {
@@ -209,7 +209,7 @@ public class Tower {
 		batch.setColor(Color.LIGHT_GRAY);
 		batch.draw(Textures.whitePixel, 50, 150, Game.VIEWPORT_WIDTH - 100, Game.VIEWPORT_HEIGHT - 200);
 		Textures.font.draw(batch, name, 100, 1100);
-		Textures.font.draw(batch, "Targets: " + getCurrentProperties().targets, 100, 1000);
+		Textures.font.draw(batch, "Targets: " + Towers.translateTarget(getCurrentProperties().targets), 100, 1000);
 		Textures.font.draw(batch, "Damage: " + getCurrentProperties().damage, 100, 900);
 		Textures.font.draw(batch, "Shots per second: " + getCurrentProperties().shotsPerSecond, 100, 800);
 		Textures.font.draw(batch, "Armor Penetration: " + getCurrentProperties().armorPenetration, 100, 700);
