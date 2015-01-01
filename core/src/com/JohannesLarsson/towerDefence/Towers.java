@@ -25,7 +25,7 @@ public abstract class Towers {
 	public static Tower[] prefabs = new Tower[] {
 		new Tower(Textures.basicTower, "Basic Tower", new TowerProperties[] { 
 				new TowerProperties(0.7f, 1, 100, Targets.Ground, 0, 200, null), 
-				new TowerProperties(1.0f, 2, 50, Targets.Ground, .1f, 250, Textures.circle) }),
+				new TowerProperties(1.0f, 2, 50, Targets.Ground, .1f, 250, null) }),
 				
 		new Tower(Textures.basicTower, "Anti-Air Tower", new TowerProperties[] { 
 				new TowerProperties(3, .5f, 200, Targets.Air, .5f, 300, null), 
