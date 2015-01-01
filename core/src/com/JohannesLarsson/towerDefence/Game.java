@@ -155,7 +155,8 @@ public class Game extends ApplicationAdapter {
 					else Buttons.upgrade.text = "Max Level";
 					
 					if(Buttons.upgrade.isPressed()) selectedTower.upgrade();
-					if(Buttons.upgradingDone.isPressed()) {
+					
+					if(Buttons.upgradingDone.isPressed() || ts.wasJustPressed() && !Buttons.upgrade.isPressed() && !Buttons.upgradingDone.isPressed()) {
 						selectedTower = null;
 						upgradeState = UpgradeStates.Inspecting;
 					}
