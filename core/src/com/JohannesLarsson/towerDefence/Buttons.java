@@ -45,7 +45,7 @@ public class Buttons {
 		inspectingToMenu = new UIButton(500, 0, 200, 100, "Menu");
 		
 		//placing
-		placingCancel = new UIButton(0, 0, 700, 100, "Cancel");
+		placingCancel = new UIButton(0, 0, 700, 100, "Done");
 		
 		//towerMenu
 		towerMenuBack = new UIButton(0, 0, 700, 100, "Back");
@@ -55,8 +55,8 @@ public class Buttons {
 		towerInfoBack = new UIButton(350, 0, 350, 100, "Back");
 		
 		//upgrading
-		upgrade = new UIButton(0, 0, 350, 100, "Upgrade"); //react to level of money somehow
-		upgradingDone = new UIButton(350, 0, 350, 100, "Done");
+		upgrade = new UIButton(50, 350, 600, 100, "Upgrade");
+		upgradingDone = new UIButton(0, 0, 700, 100, "Done");
 		
 		//during wave
 		wavePause = new UIButton(0, 0, 350, 100, "Pause");
@@ -108,9 +108,12 @@ public class Buttons {
 					
 				case UpgradingMenu:
 					//upgrade, done
-					if(Game.selectedTower.upgradeCost() > Game.playerMoney) upgrade.textColor = Color.RED;
-					else upgrade.textColor = Color.BLACK;
-					upgrade.draw(batch);
+					if(Game.selectedTower.upgradable()) {
+						if(Game.selectedTower.upgradeCost() > Game.playerMoney) upgrade.textColor = Color.RED;
+						else upgrade.textColor = Color.BLACK;
+						
+						upgrade.draw(batch);
+					}
 					upgradingDone.draw(batch);
 					break;				
 				}

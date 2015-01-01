@@ -14,18 +14,9 @@ public class Tower {
 	
 	private static final float SIZE = Tile.SIZE;
 	
-	public TowerProperties getCurrentProperties() { return upgrades[level]; }
 	public String name;
 	
 	private int level;
-	public int getLevel() {
-		return level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
-		if(upgrades[level].hasNewTexture()) setTextures(upgrades[level].texture);
-	}
 	private float x;
 	private float y;
 	private float rotation;
@@ -75,7 +66,7 @@ public class Tower {
 		
 		if(enemiesInRange.size() > 0) target = enemiesInRange.get(0);
 		else {
-			rotation *= .95f; //rotate turret back to 0, doesnt work for some reason?
+			rotation *= .95f;
 			head.setRotation(rotation);
 		}
 		
@@ -98,6 +89,16 @@ public class Tower {
 	
 	//==================================== GETTERS, SETTERS, STUFF LIKE THAT ===============================================
 	
+	public TowerProperties getCurrentProperties() { return upgrades[level]; }
+	
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+		if(upgrades[level].hasNewTexture()) setTextures(upgrades[level].texture);
+	}
 	
 	private void setTextures(Texture spriteSheet) {
 		head = new Sprite(spriteSheet, spriteSheet.getWidth() / 2, 0, spriteSheet.getWidth() / 2, spriteSheet.getHeight());
@@ -197,7 +198,7 @@ public class Tower {
 		}
 		return s;
 				
-		//TODO: handle decrease in stats if i want to add that somewhere, which might be interesting
+		//TODO: handle decrease in stats if i want to add that somewhere, which might be interesting, also maybe color the stuff
 	}
 	
 	
@@ -228,15 +229,16 @@ public class Tower {
 	}
 	
 	public void drawUpgradeStats(SpriteBatch batch) {
-		if(getUpgradeMessage().length == 0) return; // the tower is max level, dont draw anything
+		String[] msg = getUpgradeMessage();
+		if(msg.length == 0) return; // the tower is max level, dont draw anything
 		//draw gray box behind
 		batch.setColor(Color.LIGHT_GRAY);
 		batch.draw(Textures.whitePixel, 
-				50, (Game.VIEWPORT_HEIGHT / 2) - (getUpgradeMessage().length * 30) - 10, 
-				Game.VIEWPORT_WIDTH - 100, getUpgradeMessage().length * 60 + 20);
+				50, 450, //(Game.VIEWPORT_HEIGHT / 2) - (msg.length * 60) - 10, 
+				Game.VIEWPORT_WIDTH - 100, msg.length * 60);
 		batch.setColor(Color.WHITE);
-		for(int i = 0; i < getUpgradeMessage().length; i++) {
-			Textures.font.draw(batch, getUpgradeMessage()[i], 80, (Game.VIEWPORT_HEIGHT / 2) + (getUpgradeMessage().length * 30) - (i * 60)); //TODO: adjust
+		for(int i = 0; i < msg.length; i++) {
+			Textures.font.draw(batch, msg[i], 80, 500 + /*(msg.length * 30) -*/ (i * 60)); //TODO: adjust
 		}
 	}
 	

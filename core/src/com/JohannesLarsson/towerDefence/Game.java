@@ -150,7 +150,6 @@ public class Game extends ApplicationAdapter {
 					break;
 					
 				case UpgradingMenu:
-					//TODO: show the player what will change on upgrade
 					if(selectedTower.upgradable()) Buttons.upgrade.text = "Upgrade ($" + selectedTower.upgradeCost() + ")";
 					else Buttons.upgrade.text = "Max Level";
 					
