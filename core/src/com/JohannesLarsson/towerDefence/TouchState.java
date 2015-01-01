@@ -12,19 +12,22 @@ public class TouchState {
 	public float oldY;
 	public boolean wasPressed;
 	
+	private float scaleX;
+	private float scaleY;
+	
 	public boolean wasJustPressed() {
 		return isPressed && !wasPressed;
 	}
 	
 	public TouchState() {
+		scaleX = (float)Game.VIEWPORT_WIDTH / Gdx.graphics.getWidth();
+		scaleY = (float)Game.VIEWPORT_HEIGHT / Gdx.graphics.getHeight();
 		setChoords();
 		isPressed = Gdx.input.isTouched();
 		update();
 	}
 	
 	void setChoords() {
-		float scaleX = (float)Game.VIEWPORT_WIDTH / Gdx.graphics.getWidth();
-		float scaleY = (float)Game.VIEWPORT_HEIGHT / Gdx.graphics.getHeight();
 		x = Gdx.input.getX() * scaleX;
 		y = (Game.VIEWPORT_HEIGHT) - (Gdx.input.getY() * scaleY);
 	}
