@@ -13,7 +13,7 @@ public class Enemies {
 		new Enemy(3, .3f, Type.Ground, 1, 0, 0, 1, Textures.enemy),
 		new Enemy(4, .3f, Type.Ground, .6f, 0, 0, 1, Textures.enemy),
 		new Enemy(5, .4f, Type.Ground, 1.2f, 0, 0, 2, Textures.enemy),
-		new Enemy(5, .3f, Type.Air, 1, 0, 0, 2, Textures.airEnemy)
+		new Enemy(2.5f, .2f, Type.Air, 1, 0, 0, 2, Textures.airEnemy)
 	};
 	
 	private static String[] messages = new String[] 

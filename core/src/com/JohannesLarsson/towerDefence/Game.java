@@ -219,6 +219,7 @@ public class Game extends ApplicationAdapter {
 					if(enemies.get(i).remove) {
 						if(enemies.get(i).escaped) {
 							playerMoney -= Enemies.ESCAPECOST * enemies.get(i).rewardMultiplier;
+							if(playerMoney < 0) playerMoney = 0;
 						} else {
 							playerMoney += Enemies.KILLREWARD * enemies.get(i).rewardMultiplier;						
 						}
