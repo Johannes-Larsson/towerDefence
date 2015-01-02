@@ -27,7 +27,7 @@ public class TouchState {
 		update();
 	}
 	
-	void setChoords() {
+	private void setChoords() {
 		x = Gdx.input.getX() * scaleX;
 		y = (Game.VIEWPORT_HEIGHT) - (Gdx.input.getY() * scaleY);
 	}

@@ -264,7 +264,7 @@ public class Tower {
 		Textures.drawGrayBox(batch, Game.VIEWPORT_HEIGHT / 2 - THUMBNAILSIZE - THUMBNAILPADDING * 1.5f, THUMBNAILSIZE * 2 + THUMBNAILPADDING * 3);
 		
 		for(int i = 0; i < getCurrentProperties().upgrades.length; i++) {
-			drawThumbnail(batch, thumbnailX(i), thumbnailY(i), THUMBNAILSIZE);
+			drawThumbnail(batch, thumbnailX(i), thumbnailY(i), THUMBNAILSIZE, i);
 		}
 	}
 	
@@ -294,6 +294,14 @@ public class Tower {
 		batch.draw(new TextureRegion(textures, textures.getWidth() / 2, 0, textures.getWidth() / 2, textures.getHeight()), x, y, textures.getWidth() / 4, textures.getHeight() / 2, size, size, 1, 1, 0);
 		if(Game.playerMoney < cost()) Textures.font.setColor(Color.RED);
 		Textures.font.draw(batch, getCurrentProperties().name, x + (size / 2) - (Textures.font.getBounds(getCurrentProperties().name).width / 2) ,y);
+		Textures.font.setColor(Color.BLACK);
+	}
+	
+	public void drawThumbnail(SpriteBatch batch, float x, float y, float size, int upgradeIndex) {
+		batch.draw(new TextureRegion(textures, textures.getWidth() / 2, textures.getHeight()), x, y, size, size);
+		batch.draw(new TextureRegion(textures, textures.getWidth() / 2, 0, textures.getWidth() / 2, textures.getHeight()), x, y, textures.getWidth() / 4, textures.getHeight() / 2, size, size, 1, 1, 0);
+		if(Game.playerMoney < upgradeCost(upgradeIndex)) Textures.font.setColor(Color.RED);
+		Textures.font.draw(batch, getCurrentProperties().upgrades[upgradeIndex].name, x + (size / 2) - (Textures.font.getBounds(getCurrentProperties().upgrades[upgradeIndex].name).width / 2) ,y);
 		Textures.font.setColor(Color.BLACK);
 	}
 }

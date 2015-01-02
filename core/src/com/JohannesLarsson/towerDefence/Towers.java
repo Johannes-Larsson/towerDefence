@@ -23,10 +23,16 @@ public abstract class Towers {
 	}
 	
 	public static Tower[] prefabs = new Tower[] {
-		new Tower(Textures.basicTower, new TowerProperties(1, 1, 100, Targets.Ground, 0, 200, Textures.basicTower, "Basic Tower 1", new TowerProperties[] 
+		new Tower(Textures.basicTower, new TowerProperties(1, 1, 100, Targets.Ground, 0, 250, Textures.basicTower, "Ground Tower", new TowerProperties[] 
 				{
-				  new TowerProperties(2, 2, 200, Targets.Ground, 1, 300, Textures.basicTower, "Op Basic Tower", new TowerProperties[] {}),
-				  new TowerProperties(2, 2, 200, Targets.Ground, 1, 300, Textures.basicTower, "Op Basic Tower", new TowerProperties[] {})
+				  new TowerProperties(1.5f, 1.2f, 200, Targets.Ground, .1f, 300, Textures.basicTower, "Fast Tower", new TowerProperties[] 
+						  {
+						  	new TowerProperties(2, 1.4f, 300, Targets.Ground, .3f, 350, Textures.basicTower, "Fast Tower 2", new TowerProperties[] {})
+						  }),
+				  new TowerProperties(1.2f, 2.2f, 200, Targets.Ground, .1f, 300, Textures.basicTower, "Heavy Tower", new TowerProperties[] 
+						  {
+						  	new TowerProperties(1.4f, 3, 300, Targets.Ground, .3f, 350, Textures.basicTower, "Heavy Tower 2", new TowerProperties[] {})
+						  })
 				}))
 				
 		/*new Tower(Textures.basicTower, "Anti-Air Tower", new TowerProperties[] { 

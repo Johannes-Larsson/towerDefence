@@ -209,9 +209,9 @@ public class Game extends ApplicationAdapter {
 					enemies.get(i).update(previousEnemy);
 					if(enemies.get(i).remove) {
 						if(enemies.get(i).escaped) {
-							playerMoney -= 300;
+							playerMoney -= Enemies.ESCAPECOST * enemies.get(i).rewardMultiplier;
 						} else {
-							playerMoney += 100;							
+							playerMoney += Enemies.KILLREWARD * enemies.get(i).rewardMultiplier;						
 						}
 						enemies.remove(i);
 					}
@@ -264,6 +264,7 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+		//TODO: implement some fast forwarding?
 		update();
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);

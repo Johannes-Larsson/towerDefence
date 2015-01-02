@@ -6,6 +6,8 @@ import com.JohannesLarsson.towerDefence.Enemy.Type;
 
 public class Enemies {
 	
+	public static final int KILLREWARD = 20, ESCAPECOST = 100;
+	
 	private final static Enemy[] prefabs = new Enemy[]{
 		new Enemy(2, .2f, Type.Ground, 2.5f, 0, 0, 1), 
 		new Enemy(3, .5f, Type.Ground, 1, 0, 0, 1),
