@@ -33,8 +33,8 @@ public class Enemies {
 
 		int lvl = Game.level - 1;
 		
-		int noOfEnemies = 1 + lvl / 4;
-		int enemyType = lvl / 4 + lvl % 4;
+		int noOfEnemies = 1 + lvl / 6;
+		int enemyType = lvl / 6 + lvl % 6;
 		
 		if(noOfEnemies == 0) noOfEnemies = 1;
 		

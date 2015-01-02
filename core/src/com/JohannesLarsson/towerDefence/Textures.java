@@ -12,7 +12,9 @@ public abstract class Textures {
 	
 	public static Texture 
 	//img,
-	basicTower,
+	groundTower,
+	airTower,
+	bothTower,
 	whitePixel,
 	tile,
 	road,
@@ -28,7 +30,9 @@ public abstract class Textures {
 		font.setScale(3.0f);
 		font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		basicTower = new Texture("basicTower.png");
+		groundTower = new Texture("groundTower.png");
+		airTower = new Texture("airTower.png");
+		bothTower = new Texture("bothTower.png");
 		whitePixel = new Texture("white.png");
 		tile = new Texture("tile.png");
 		road = new Texture("road.png");

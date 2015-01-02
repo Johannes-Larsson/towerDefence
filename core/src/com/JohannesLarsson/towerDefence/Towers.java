@@ -24,27 +24,27 @@ public abstract class Towers {
 	}
 	
 	public static Tower[] prefabs = new Tower[] {
-		new Tower(Textures.basicTower, new TowerProperties(1, 1, 100, Targets.Ground, 0, 250, Textures.basicTower, "Ground Tower", new TowerProperties[] 
+		new Tower(Textures.groundTower, new TowerProperties(1, 1, 100, Targets.Ground, 0, 250, Textures.groundTower, "Ground Tower", new TowerProperties[] 
 				{
-				  new TowerProperties(1.5f, 1.2f, 200, Targets.Ground, .1f, 300, Textures.basicTower, "Fast Tower", new TowerProperties[] 
+				  new TowerProperties(2f, 1.2f, 100, Targets.Ground, .1f, 300, Textures.groundTower, "Fast Tower", new TowerProperties[] 
 						  {
-						  	new TowerProperties(2, 1.4f, 300, Targets.Ground, .3f, 350, Textures.basicTower, "Fast Tower 2", new TowerProperties[] {})
+						  	new TowerProperties(2.6f, 1.4f, 300, Targets.Ground, .3f, 350, Textures.groundTower, "Fast Tower 2", new TowerProperties[] {})
 						  }),
-				  new TowerProperties(1.2f, 2.2f, 200, Targets.Ground, .1f, 300, Textures.basicTower, "Heavy Tower", new TowerProperties[] 
+				  new TowerProperties(1.2f, 2.2f, 200, Targets.Ground, .1f, 300, Textures.groundTower, "Heavy Tower", new TowerProperties[] 
 						  {
-						  	new TowerProperties(1.4f, 3, 300, Targets.Ground, .3f, 350, Textures.basicTower, "Heavy Tower 2", new TowerProperties[] {})
+						  	new TowerProperties(1.4f, 3, 300, Targets.Ground, .3f, 350, Textures.groundTower, "Heavy Tower 2", new TowerProperties[] {})
 						  })
 				})),
 				
-		new Tower(Textures.basicTower, new TowerProperties(1, 1, 150, Targets.Air, 0, 250, Textures.basicTower, "Anti-Air Tower", new TowerProperties[] 
+		new Tower(Textures.airTower, new TowerProperties(1, 1, 100, Targets.Air, 0, 250, Textures.airTower, "Anti-Air Tower", new TowerProperties[] 
 				{
-					new TowerProperties(1.5f, 1.2f, 200, Targets.Air, 0.2f, 300, Textures.basicTower, "Faster Anti-Air", new TowerProperties[] 
+					new TowerProperties(1.5f, 1.2f, 200, Targets.Air, 0.2f, 300, Textures.airTower, "Faster Anti-Air", new TowerProperties[] 
 							{
-								new TowerProperties(2.2f, 1.4f, 300, Targets.Air, .4f, 350, Textures.basicTower, "Faster Anti-Air 2", new TowerProperties[]	{})
+								new TowerProperties(2.2f, 1.4f, 300, Targets.Air, .4f, 350, Textures.airTower, "Faster Anti-Air 2", new TowerProperties[]	{})
 							}),
-					new TowerProperties(1.2f, 1.6f, 200, Targets.Air, .3f, 300, Textures.basicTower, "Heavier Anti-Air", new TowerProperties[] 
+					new TowerProperties(1.2f, 1.6f, 200, Targets.Air, .3f, 300, Textures.airTower, "Heavier Anti-Air", new TowerProperties[] 
 							{
-								new TowerProperties(1.3f, 2f, 300, Targets.Air, .6f, 400, Textures.basicTower, "Heavier Anti-Air 2", new TowerProperties[] {})
+								new TowerProperties(1.3f, 2f, 300, Targets.Air, .6f, 400, Textures.airTower, "Heavier Anti-Air 2", new TowerProperties[] {})
 							})
 				}
 		))
