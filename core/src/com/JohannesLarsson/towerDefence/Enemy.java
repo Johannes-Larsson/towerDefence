@@ -80,7 +80,7 @@ public class Enemy {
 		remove = false;
 		escaped = false;
 		nextMovementNodeIndex = 0;
-		sprite = new Sprite(Textures.enemy);
+		sprite = new Sprite(e.sprite);
 		sprite.setSize(SIZE, SIZE);
 		sprite.setOriginCenter();
 		sprite.setCenter(x - Tile.SIZE / 4, y - Tile.SIZE / 4);
