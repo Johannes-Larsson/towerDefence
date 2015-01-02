@@ -74,7 +74,7 @@ public class Tower {
 		
 		if(target != null) { //if an enemy exists
 			float distSq = (float) (Math.pow(x - target.getX(), 2) + Math.pow(y - target.getY(), 2));
-			if(distSq < Math.pow(getCurrentProperties().range, 2)) { //and is in range
+			if(distSq < Math.pow(getCurrentProperties().range, 2) && target.isVisible()) { //and is in range
 				float deltaAngle = ((MathUtils.atan2(target.getCenterY() - getCenterY(), target.getCenterX() - getCenterX()) * MathUtils.radDeg) - rotation);
 				rotation += deltaAngle * .2f;
 				head.setRotation(rotation);

@@ -79,6 +79,9 @@ public class Map {
 		{0, 1, 1, 0, 0, 0, 0},
 	} ;
 	
-	public static final float[] movementX = new float[] { 200, 250, 350, 400};
-	public static final float[] movementY = new float[] { 1400, 850, 750, 0 };
+	public static final float[] groundMovementX = new float[] { 200, 250, 350, 400};
+	public static final float[] groundMovementY = new float[] { 1400, 850, 750, 0 };
+	
+	public static final float[] airMovementX = new float[] { 200, 300, 400};
+	public static final float[] airMovementY = new float[] { 1330, 800, 0 };
 }

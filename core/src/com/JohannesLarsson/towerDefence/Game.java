@@ -38,6 +38,7 @@ public class Game extends ApplicationAdapter {
 	public static int level;
 	public static Tower selectedTower;
 	public static int selectedUpgradeIndex;  
+	public static ArrayList<FadingMessage> messages;
 
 	SpriteBatch batch;
 	OrthographicCamera camera;
@@ -57,12 +58,13 @@ public class Game extends ApplicationAdapter {
 		ts = new TouchState();
 		shots = new ArrayList<Shot>();
 		Buttons.makeButtons();
+		messages = new ArrayList<FadingMessage>();
 	}
 	
 	void startNewGame() {
 		level = 1;
 		playerMoney = 100;
-		enemies = Enemies.getNewWave();
+		enemies = new ArrayList<Enemy>();
 		shots = new ArrayList<Shot>();
 		Map.makeMap();
 		//enemies.get(0).started = true;
@@ -79,6 +81,13 @@ public class Game extends ApplicationAdapter {
 		ts.update();
 		
 		Map.update(enemies);
+		
+		for(int i = 0; i < messages.size(); i++) {
+			messages.get(i).update();
+			if(messages.get(i).remove) {
+				messages.remove(i);
+			}
+		}
 
 		switch (gameState) {
 		case Game:
@@ -91,7 +100,7 @@ public class Game extends ApplicationAdapter {
 				
 				case TowerMenu:
 					
-					if(Buttons.towerMenuBack.isPressed()) upgradeState = UpgradeStates.Inspecting;
+					if(Buttons.towerMenuBack.isPressed() || Towers.clickedTower() == null && ts.wasJustPressed()) upgradeState = UpgradeStates.Inspecting;
 					
 					if(Towers.clickedTower() != null) {
 						selectedTower = Towers.clickedTower();
@@ -129,7 +138,7 @@ public class Game extends ApplicationAdapter {
 					if(Buttons.towerInfoPlace.isPressed()) {
 						upgradeState = UpgradeStates.PlacingTower;
 					}
-					if(Buttons.towerInfoBack.isPressed()) {
+					else if(ts.wasJustPressed()) {
 						upgradeState = UpgradeStates.TowerMenu;
 						selectedTower = null;
 					}
@@ -303,6 +312,7 @@ public class Game extends ApplicationAdapter {
 					
 				case UpgradingMenu:
 					
+					selectedTower.drawRange(batch);
 					selectedTower.drawTitle(batch);
 					Textures.setSmallFontScale();
 					selectedTower.drawUpgradeThumbnails(batch);
@@ -345,7 +355,11 @@ public class Game extends ApplicationAdapter {
 		
 		Buttons.drawButtons(batch);
 		
-		//Textures.font.draw(batch, waveState + "\n" + upgradeState, 100,  100);
+		//Textures.font.draw(batch, Enemies.m, 100,  100);
+		
+		for(FadingMessage m : messages) {
+			m.draw(batch);
+		}
 
 		batch.end();
 	}

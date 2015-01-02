@@ -17,6 +17,7 @@ public abstract class Textures {
 	tile,
 	road,
 	enemy,
+	airEnemy,
 	circle,
 	square;
 	
@@ -34,6 +35,7 @@ public abstract class Textures {
 		enemy = new Texture("enemy.png");
 		circle = new Texture("circle.png");
 		square = new Texture("square.png");
+		airEnemy = new Texture("airEnemy.png");
 	}
 	
 	public static void setRegularFontScale() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.JohannesLarsson.towerDefence.TowerProperties.Targets;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Towers {
@@ -33,16 +34,20 @@ public abstract class Towers {
 						  {
 						  	new TowerProperties(1.4f, 3, 300, Targets.Ground, .3f, 350, Textures.basicTower, "Heavy Tower 2", new TowerProperties[] {})
 						  })
-				}))
+				})),
 				
-		/*new Tower(Textures.basicTower, "Anti-Air Tower", new TowerProperties[] { 
-				new TowerProperties(3, .5f, 200, Targets.Air, .5f, 300, null), 
-				new TowerProperties(5, .7f, 60, Targets.Air, .6f, 350, null) } ),
-				
-		new Tower(Textures.basicTower, "Fast Tower", new TowerProperties[] {
-				new TowerProperties(2, .3f, 200, Targets.Ground, .4f, 300, null),
-				new TowerProperties(3, .45f, 100, Targets.Both, .45f, 350, null)
-		})*/
+		new Tower(Textures.basicTower, new TowerProperties(1, 1, 150, Targets.Air, 0, 250, Textures.basicTower, "Anti-Air Tower", new TowerProperties[] 
+				{
+					new TowerProperties(1.5f, 1.2f, 200, Targets.Air, 0.2f, 300, Textures.basicTower, "Faster Anti-Air", new TowerProperties[] 
+							{
+								new TowerProperties(2.2f, 1.4f, 300, Targets.Air, .4f, 350, Textures.basicTower, "Faster Anti-Air 2", new TowerProperties[]	{})
+							}),
+					new TowerProperties(1.2f, 1.6f, 200, Targets.Air, .3f, 300, Textures.basicTower, "Heavier Anti-Air", new TowerProperties[] 
+							{
+								new TowerProperties(1.3f, 2f, 300, Targets.Air, .6f, 400, Textures.basicTower, "Heavier Anti-Air 2", new TowerProperties[] {})
+							})
+				}
+		))
 	} ;
 	
 	public static Tower clickedTower() {

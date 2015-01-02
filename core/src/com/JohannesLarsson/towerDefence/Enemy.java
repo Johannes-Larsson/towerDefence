@@ -3,6 +3,7 @@ package com.JohannesLarsson.towerDefence;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -48,19 +49,19 @@ public class Enemy {
 		return y;
 	}
 	
-	public Enemy(float maxHp, float armor, Type type, float speed, float maxShield, float shieldRegen, float rewardMultiplier) {
+	public Enemy(float maxHp, float armor, Type type, float speed, float maxShield, float shieldRegen, float rewardMultiplier, Texture texture) {
 		hp = this.maxHp = maxHp;
 		this.type = type;
 		this.speed = speed;
 		this.armor = armor;
-		x = Map.movementX[0];
-		y = Map.movementY[0];
+		x = Map.groundMovementX[0];
+		y = Map.groundMovementY[0];
 		this.speed = speed;
 		this.rewardMultiplier = rewardMultiplier;
 		remove = false;
 		escaped = false;
 		nextMovementNodeIndex = 0;
-		sprite = new Sprite(Textures.enemy);
+		sprite = new Sprite(texture);
 		sprite.setSize(SIZE, SIZE);
 		sprite.setOriginCenter();
 		sprite.setCenter(x - Tile.SIZE / 4, y - Tile.SIZE / 4);
@@ -71,8 +72,8 @@ public class Enemy {
 		this.type = e.type;
 		this.speed = e.speed;
 		this.armor = e.armor;
-		x = Map.movementX[0];
-		y = Map.movementY[0];
+		x = Map.groundMovementX[0];
+		y = Map.groundMovementY[0];
 		speed = e.speed;
 		this.rewardMultiplier = e.rewardMultiplier;
 		
@@ -87,19 +88,38 @@ public class Enemy {
 	
 	public void update(Enemy previousEnemy) {
 		
-		if(Math.pow((Map.movementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.movementY[nextMovementNodeIndex] - y, 2) < 5) {
-			if(nextMovementNodeIndex < Map.movementX.length - 1) nextMovementNodeIndex += 1;
-			else {
-				remove = true;
-				escaped = true;
+		if(type == Type.Ground) {
+			if(Math.pow((Map.groundMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.groundMovementY[nextMovementNodeIndex] - y, 2) < 5) {
+				if(nextMovementNodeIndex < Map.groundMovementX.length - 1) nextMovementNodeIndex += 1;
+				else {
+					remove = true;
+					escaped = true;
+				}
+			}
+			
+			if(started) {
+				rotation = (float) (MathUtils.radDeg * MathUtils.atan2(Map.groundMovementY[nextMovementNodeIndex] - y, Map.groundMovementX[nextMovementNodeIndex] - x)) % 360;
+				x += MathUtils.cosDeg(rotation) * speed;
+				y += MathUtils.sinDeg(rotation) * speed; 
+			}
+		}
+		else {
+			if(Math.pow((Map.airMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.airMovementY[nextMovementNodeIndex] - y, 2) < 5) {
+				if(nextMovementNodeIndex < Map.airMovementX.length - 1) nextMovementNodeIndex += 1;
+				else {
+					remove = true;
+					escaped = true;
+				}
+			}
+			
+			if(started) {
+				rotation = (float) (MathUtils.radDeg * MathUtils.atan2(Map.airMovementY[nextMovementNodeIndex] - y, Map.airMovementX[nextMovementNodeIndex] - x)) % 360;
+				x += MathUtils.cosDeg(rotation) * speed;
+				y += MathUtils.sinDeg(rotation) * speed; 
 			}
 		}
 		
-		if(started) {
-			rotation = (float) (MathUtils.radDeg * MathUtils.atan2(Map.movementY[nextMovementNodeIndex] - y, Map.movementX[nextMovementNodeIndex] - x)) % 360;
-			x += MathUtils.cosDeg(rotation) * speed;
-			y += MathUtils.sinDeg(rotation) * speed; 
-		}
+		
 		
 		if(hp <= 0) remove = true;
 		
@@ -108,6 +128,10 @@ public class Enemy {
 		
 		sprite.setRotation(rotation);
 		sprite.setCenter(x, y);
+	}
+	
+	public boolean isVisible() {
+		return y < Game.VIEWPORT_HEIGHT && y > 0;
 	}
 	
 	public void draw(SpriteBatch batch) {
