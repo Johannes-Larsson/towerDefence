@@ -3,6 +3,7 @@ package com.JohannesLarsson.towerDefence;
 import java.util.ArrayList;
 
 import com.JohannesLarsson.towerDefence.Enemy.Type;
+import com.badlogic.gdx.math.MathUtils;
 
 public class Enemies {
 	
@@ -25,24 +26,56 @@ public class Enemies {
 		"Medium Flying"
 	};
 	
-	private static final int RANGESIZE = 3;
+	public static Enemy enemy = new Enemy(prefabs[0]);
+	
+	public static int bestDistance = 0;
+	
+	private static final float 
+	removeMult = .35f, 
+	addMult = 1.3f,
+	hpMult = .14f,
+	armorMult = .14f,
+	speedMult = .1f,
+	levelMult = .25f;
 	
 	public static ArrayList<Enemy> getNewWave() {
-		//TODO: implement a system where later enemies in the list dont appear the first round they should
 		ArrayList<Enemy> e = new ArrayList<Enemy>();
-
-		int lvl = Game.level - 1;
 		
-		int noOfEnemies = 1 + lvl / 6;
-		int enemyType = lvl / 6 + lvl % 6;
+		Enemy newEnemy = new Enemy(enemy);
 		
-		if(noOfEnemies == 0) noOfEnemies = 1;
-		
-		for(int i = 0; i < noOfEnemies; i++) {
-			e.add(new Enemy(prefabs[enemyType]));
+		switch(MathUtils.random(2)) {
+		case 0:
+			newEnemy.hp += hpMult * addMult * Game.level * levelMult;
+			Game.messages.add(new FadingMessage("Adding Hp " + newEnemy.hp, Game.VIEWPORT_WIDTH / 2, Game.VIEWPORT_HEIGHT - 50, true, 60));
+			break;
+		case 1:
+			newEnemy.armor += armorMult * addMult * Game.level * levelMult;
+			Game.messages.add(new FadingMessage("Adding Armor " + newEnemy.armor, Game.VIEWPORT_WIDTH / 2, Game.VIEWPORT_HEIGHT - 50, true, 60));
+			break;
+		case 2:
+			newEnemy.speed += speedMult * addMult * Game.level * levelMult;
+			Game.messages.add(new FadingMessage("Adding Speed " + newEnemy.speed, Game.VIEWPORT_WIDTH / 2, Game.VIEWPORT_HEIGHT - 50, true, 60));
+			break;
 		}
 		
-		Game.messages.add(new FadingMessage(messages[enemyType], Game.VIEWPORT_WIDTH / 2, Game.VIEWPORT_HEIGHT - 50, true, 60));
+		switch(MathUtils.random(2)) {
+		case 0:
+			newEnemy.hp -= hpMult * removeMult * Game.level * levelMult;
+			Game.messages.add(new FadingMessage("Removing Hp " + newEnemy.hp, Game.VIEWPORT_WIDTH / 2, Game.VIEWPORT_HEIGHT - 100, true, 60));
+			break;
+		case 1:
+			newEnemy.armor -= armorMult * removeMult * Game.level * levelMult;
+			Game.messages.add(new FadingMessage("Removing Armor " + newEnemy.armor, Game.VIEWPORT_WIDTH / 2, Game.VIEWPORT_HEIGHT - 100, true, 60));
+			break;
+		case 2:
+			newEnemy.speed -= speedMult * removeMult * Game.level * levelMult;
+			Game.messages.add(new FadingMessage("Removing Speed " + newEnemy.speed, Game.VIEWPORT_WIDTH / 2, Game.VIEWPORT_HEIGHT - 100, true, 60));
+			break;
+		}
+		
+		for(int i = 0; i < 1 + (Game.level / 4); i++) {
+			e.add(new Enemy(newEnemy));
+		}
 		
 		return e;
 	}

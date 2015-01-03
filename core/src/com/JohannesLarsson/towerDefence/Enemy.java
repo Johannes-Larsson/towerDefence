@@ -32,6 +32,7 @@ public class Enemy {
 	private float rotation;
 	private Sprite sprite;
 	private int nextMovementNodeIndex;
+	private int lifeTime;
 	
 	public float getCenterX() {
 		return x;// - SIZE / 2;
@@ -65,6 +66,7 @@ public class Enemy {
 		sprite.setSize(SIZE, SIZE);
 		sprite.setOriginCenter();
 		sprite.setCenter(x - Tile.SIZE / 4, y - Tile.SIZE / 4);
+		lifeTime = 0;
 	}
 	
 	public Enemy(Enemy e) {
@@ -77,6 +79,7 @@ public class Enemy {
 		speed = e.speed;
 		this.rewardMultiplier = e.rewardMultiplier;
 		
+		lifeTime = 0;
 		remove = false;
 		escaped = false;
 		nextMovementNodeIndex = 0;
@@ -88,12 +91,15 @@ public class Enemy {
 	
 	public void update(Enemy previousEnemy) {
 		
+		lifeTime++;
+		
 		if(type == Type.Ground) {
-			if(Math.pow((Map.groundMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.groundMovementY[nextMovementNodeIndex] - y, 2) < 5) {
+			if(Math.pow((Map.groundMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.groundMovementY[nextMovementNodeIndex] - y, 2) <= speed) {
 				if(nextMovementNodeIndex < Map.groundMovementX.length - 1) nextMovementNodeIndex += 1;
 				else {
 					remove = true;
 					escaped = true;
+					onDeath();
 				}
 			}
 			
@@ -104,11 +110,12 @@ public class Enemy {
 			}
 		}
 		else {
-			if(Math.pow((Map.airMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.airMovementY[nextMovementNodeIndex] - y, 2) < 5) {
+			if(Math.pow((Map.airMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.airMovementY[nextMovementNodeIndex] - y, 2) <= speed) {
 				if(nextMovementNodeIndex < Map.airMovementX.length - 1) nextMovementNodeIndex += 1;
 				else {
 					remove = true;
 					escaped = true;
+					onDeath();
 				}
 			}
 			
@@ -121,13 +128,23 @@ public class Enemy {
 		
 		
 		
-		if(hp <= 0) remove = true;
+		if(hp <= 0) {
+			remove = true;
+			onDeath();
+		}
 		
 		if(previousEnemy == null) started = true; // this is the first enemy
 		else if(Math.pow(previousEnemy.x - x, 2) + Math.pow(previousEnemy.y - y, 2) > 10000) started = true;
 		
 		sprite.setRotation(rotation);
 		sprite.setCenter(x, y);
+	}
+	
+	private void onDeath() {
+		float dist = speed * lifeTime;
+		if(dist > Enemies.bestDistance) {
+			Enemies.enemy = new Enemy(this);
+		}
 	}
 	
 	public boolean isVisible() {
