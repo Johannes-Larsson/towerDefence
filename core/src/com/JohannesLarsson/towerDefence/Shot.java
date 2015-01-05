@@ -30,7 +30,7 @@ public class Shot {
 		//sprite.setCenter(x - MathUtils.cosDeg(rotation) * length, y - MathUtils.sinDeg(rotation) * THICKNESS);
 		sprite.setPosition(x, y);
 
-		target.hp -= parent.getCurrentProperties().damage * (1 - parent.getCurrentProperties().armorPenetration * target.armor);		
+		target.takeDamage(parent.getCurrentProperties());	
 	}
 	
 	public void update() {

@@ -52,13 +52,15 @@ public class Enemy {
 	
 	public Enemy(float maxHp, float armor, Type type, float speed, float maxShield, float shieldRegen, float rewardMultiplier, Texture texture) {
 		hp = this.maxHp = maxHp;
+		shield = this.maxShield = maxShield;
 		this.type = type;
 		this.speed = speed;
 		this.armor = armor;
-		x = Map.groundMovementX[0];
-		y = Map.groundMovementY[0];
 		this.speed = speed;
 		this.rewardMultiplier = rewardMultiplier;
+		this.shieldRegen = shieldRegen;
+		x = Map.groundMovementX[0];
+		y = Map.groundMovementY[0];
 		remove = false;
 		escaped = false;
 		nextMovementNodeIndex = 0;
@@ -71,9 +73,11 @@ public class Enemy {
 	
 	public Enemy(Enemy e) {
 		hp = this.maxHp = e.maxHp;
+		shield = this.maxShield = e.maxShield;
 		this.type = e.type;
 		this.speed = e.speed;
 		this.armor = e.armor;
+		this.shieldRegen = e.shieldRegen;
 		x = Map.groundMovementX[0];
 		y = Map.groundMovementY[0];
 		speed = e.speed;
@@ -93,8 +97,11 @@ public class Enemy {
 		
 		lifeTime++;
 		
+		shield += shieldRegen;
+		if(shield > maxShield) shield = maxShield;
+		
 		if(type == Type.Ground) {
-			if(Math.pow((Map.groundMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.groundMovementY[nextMovementNodeIndex] - y, 2) <= speed) {
+			if(Math.pow((Map.groundMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.groundMovementY[nextMovementNodeIndex] - y, 2) <= speed * 1.5f) {
 				if(nextMovementNodeIndex < Map.groundMovementX.length - 1) nextMovementNodeIndex += 1;
 				else {
 					remove = true;
@@ -110,7 +117,7 @@ public class Enemy {
 			}
 		}
 		else {
-			if(Math.pow((Map.airMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.airMovementY[nextMovementNodeIndex] - y, 2) <= speed) {
+			if(Math.pow((Map.airMovementX[nextMovementNodeIndex] - x), 2) + Math.pow(Map.airMovementY[nextMovementNodeIndex] - y, 2) <= speed * 1.5f) {
 				if(nextMovementNodeIndex < Map.airMovementX.length - 1) nextMovementNodeIndex += 1;
 				else {
 					remove = true;
@@ -142,8 +149,15 @@ public class Enemy {
 	
 	private void onDeath() {
 		float dist = speed * lifeTime;
-		if(dist > Enemies.bestDistance) {
+		Game.messages.add(new FadingMessage("dist: " + dist, Game.VIEWPORT_WIDTH / 2, 800, true, 60));
+		if(dist >= Enemies.bestDistance) {
 			Enemies.enemy = new Enemy(this);
+			Enemies.bestDistance = dist;
+			Game.messages.add(new FadingMessage("this is best enemy", Game.VIEWPORT_WIDTH / 2, 700, true, 60));
+		}
+		else {
+			Enemies.difficultyMult *= 1.03f;
+			Game.messages.add(new FadingMessage("Dmult = " + Enemies.difficultyMult, Game.VIEWPORT_WIDTH / 2, 700, true, 50));
 		}
 	}
 	
@@ -151,13 +165,27 @@ public class Enemy {
 		return y < Game.VIEWPORT_HEIGHT && y > 0;
 	}
 	
+	public void takeDamage(TowerProperties shooter) {
+		if(armor > 1) armor = 1;
+		float damage = shooter.damage * (1 - shooter.armorPenetration * armor);	
+		shield -= damage;
+		if(shield < 0) {
+			hp += shield;
+			shield = 0;
+		}
+	}
+	
 	public void draw(SpriteBatch batch) {
-		final float HEIGHT = 10, WIDTH = 80, XOFFSET = -40, YOFFSET = 40;
 		sprite.draw(batch);
+		drawBar(batch, Color.RED, hp / maxHp, -40, 40, 80, 10); //hp bar
+		drawBar(batch, Color.BLUE, shield / maxShield, -40, 30, 80, 7);
+	}
+	
+	private void drawBar(SpriteBatch batch, Color color, float val, float relX, float relY, float w, float h) {
 		batch.setColor(Color.GRAY);
-		batch.draw(Textures.whitePixel, x + XOFFSET, y + YOFFSET, WIDTH, HEIGHT);
-		batch.setColor(Color.RED);
-		batch.draw(Textures.whitePixel, x + XOFFSET, y + YOFFSET, WIDTH * (hp / maxHp), HEIGHT); 
-		batch.setColor(Color.WHITE);
+		batch.draw(Textures.whitePixel, x + relX, y + relY, w, h);
+		batch.setColor(color);
+		batch.draw(Textures.whitePixel, x + relX, y + relY, w * val, h); 
+		batch.setColor(Color.WHITE);		
 	}
 }
